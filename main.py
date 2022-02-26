@@ -28,6 +28,8 @@ def main(url, image_amount):
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(1)
 
+        time.sleep(5)  # Wait for page to load
+
         # Todo scroll down
         # Todo continue if same image already found
         # Getting the div where the images are located
@@ -41,12 +43,13 @@ def main(url, image_amount):
         print(f"flat_div_size: {len(flat_div_elements)}")
         # Getting the image URL's
         for y in flat_div_elements:
+            # Problem for error is that there are ads which are videos and not an "img"
+
             tmp = y.find_element(By.CSS_SELECTOR, 'img.vertical-view__media')
             url = tmp.get_attribute('src')
             if url in image_url:
                 continue
             image_url.append(url)
-
 
     print(f"image_url_size: {len(image_url)} \n {image_url}")
 
