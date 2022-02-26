@@ -11,6 +11,8 @@ def main():
 
     # open the webpage
     driver.get("https://scrolller.com/r/cats?sort=top&filter=pictures")
+    elem = driver.find_element(By.CLASS_NAME, "gallery-view")
+    print(elem.text)
 
 
 if __name__ == '__main__':
