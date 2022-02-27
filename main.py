@@ -4,9 +4,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 import time
+import urllib.request
+import re
 
 
 def main(url, input_image_amount):
+
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(6)  # Temporary Solution because with the other one I get not code completion :x
@@ -48,16 +51,21 @@ def main(url, input_image_amount):
 
     driver.close()
 
+    counter = 1
+    scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
+    for x in image_url:
+        urllib.request.urlretrieve(x, scrolller_name + " " + str(counter) + ".jpg")
+        counter += 1
+
 
 def url_finder(flat_div_elements, image_url, input_image_amount):
-
     for y in flat_div_elements:
         if len(image_url) >= input_image_amount:
             return
         tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
         tag_name = tmp.tag_name
 
-        print(f'alt?: {tmp.get_attribute("alt")}')
+        # print(f'alt?: {tmp.get_attribute("alt")}')
 
         if tag_name == 'img' and tmp.get_attribute('alt') != 'None':
             url = tmp.get_attribute('src')
@@ -67,4 +75,4 @@ def url_finder(flat_div_elements, image_url, input_image_amount):
 
 
 if __name__ == '__main__':
-    main("https://scrolller.com/r/cats?sort=top&filter=pictures", 30)
+    main("https://scrolller.com/r/cats?sort=top&filter=pictures", 3)
