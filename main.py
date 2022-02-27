@@ -45,11 +45,14 @@ def main(url, image_amount):
         for y in flat_div_elements:
             # Problem for error is that there are ads which are videos and not an "img"
 
-            tmp = y.find_element(By.CSS_SELECTOR, 'img.vertical-view__media')
-            url = tmp.get_attribute('src')
-            if url in image_url:
-                continue
-            image_url.append(url)
+            tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
+            tag_name = tmp.tag_name
+            print(f'tag_name: {tag_name}')
+            if tag_name == 'img':
+                url = tmp.get_attribute('src')
+                if url in image_url:
+                    continue
+                image_url.append(url)
 
     print(f"image_url_size: {len(image_url)} \n {image_url}")
 
