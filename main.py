@@ -8,8 +8,9 @@ import urllib.request
 import re
 
 
-def main(url, input_image_amount):
-
+def main(url, input_image_amount, path=None):
+    if path is None or path == "":
+        path = "./images/"
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(6)  # Temporary Solution because with the other one I get not code completion :x
@@ -54,7 +55,9 @@ def main(url, input_image_amount):
     counter = 1
     scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
     for x in image_url:
-        urllib.request.urlretrieve(x, scrolller_name + " " + str(counter) + ".jpg")
+        # urllib.request.urlretrieve(x, scrolller_name + " " + str(counter) + ".jpg")
+
+        urllib.request.urlretrieve(x, path + scrolller_name + " " + str(counter) + ".jpg")
         counter += 1
 
 
