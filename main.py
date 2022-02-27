@@ -6,7 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 import time
 
 
-def main(url, image_amount):
+def main(url, input_image_amount):
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(6)  # Temporary Solution because with the other one I get not code completion :x
@@ -21,7 +21,7 @@ def main(url, image_amount):
     print(f"elements_size: {len(elements)}")
     image_url = []
 
-    while len(image_url) < image_amount:
+    while len(image_url) < input_image_amount:
         # Scroll down and load images
         # only scroll down two times because the images get unloaded
         for j in range(0, 2):
@@ -42,21 +42,29 @@ def main(url, image_amount):
         flat_div_elements = [item for sublist in div_elements for item in sublist]
         print(f"flat_div_size: {len(flat_div_elements)}")
         # Getting the image URL's
-        for y in flat_div_elements:
-            # Problem for error is that there are ads which are videos and not an "img"
-
-            tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
-            tag_name = tmp.tag_name
-            print(f'tag_name: {tag_name}')
-            if tag_name == 'img':
-                url = tmp.get_attribute('src')
-                if url in image_url:
-                    continue
-                image_url.append(url)
+        url_finder(flat_div_elements, image_url, input_image_amount)
 
     print(f"image_url_size: {len(image_url)} \n {image_url}")
 
     driver.close()
+
+
+def url_finder(flat_div_elements, image_url, input_image_amount):
+
+    for y in flat_div_elements:
+        if len(image_url) >= input_image_amount:
+            return
+        # TODO check if the image as an 'alt' attribute --> then it an real image and not an ad
+        tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
+        tag_name = tmp.tag_name
+
+        print(f'alt?: {tmp.get_attribute("alt")}')
+
+        if tag_name == 'img' and tmp.get_attribute('alt') != 'None':
+            url = tmp.get_attribute('src')
+            if url in image_url:
+                continue
+            image_url.append(url)
 
 
 if __name__ == '__main__':
