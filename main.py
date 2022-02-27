@@ -54,7 +54,6 @@ def url_finder(flat_div_elements, image_url, input_image_amount):
     for y in flat_div_elements:
         if len(image_url) >= input_image_amount:
             return
-        # TODO check if the image as an 'alt' attribute --> then it an real image and not an ad
         tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
         tag_name = tmp.tag_name
 
