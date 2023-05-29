@@ -111,9 +111,9 @@ if __name__ == '__main__':
     if len(args) == 4:
         output_path = args[3]
     else:
-        # Create the directory
-        os.makedirs(output_path)
-        print()
+        if not os.path.exists(output_path):
+            # Create the directory
+            os.makedirs(output_path)
 
     
     main(url,requested_image_amount,output_path)
