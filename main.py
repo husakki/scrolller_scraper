@@ -2,6 +2,7 @@ import re
 import time
 import urllib.request
 
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -41,15 +42,24 @@ def main(url, input_image_amount, path=None):
         # Getting the image URL's
         url_finder(flat_div_elements, image_url, input_image_amount)
 
-    # print(f"image_url_size: {len(image_url)} \n {image_url}")
+    print(f"image_url_size: {len(image_url)} \n {image_url}")
 
     driver.close()
 
     counter = 1
     scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
     for x in image_url:
-        urllib.request.urlretrieve(x, path + scrolller_name + " " + str(counter) + ".jpg")
+        download_image(x, path + scrolller_name + " " + str(counter) + ".jpg")
         counter += 1
+
+def download_image(url, file_path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        print("Image downloaded successfully.")
+    else:
+        print("Failed to download the image.")
 
 
 def url_finder(flat_div_elements, image_url, input_image_amount):
