@@ -1,8 +1,9 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import re
 import time
 import urllib.request
-import re
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 def main(url, input_image_amount, path=None):
