@@ -53,6 +53,12 @@ def main(url, requested_image_amount, output_path):
         # Getting the image URL's
         url_finder(flat_div_elements, image_url, requested_image_amount)
 
+        #Check if no new images were found during the scrolling
+        if len(image_url) == previous_image_count:
+            print("No new images were found. Stopping Scraping.")
+            break
+        previous_image_count = len(image_url)
+
     # print(f"image_url_size: {len(image_url)} \n {image_url}")
 
     driver.close()
