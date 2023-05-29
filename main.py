@@ -18,7 +18,6 @@ def main(url, input_image_amount, path=None):
     wait = WebDriverWait(driver, 7)
     
     driver.get(url)
-    
     wait.until(EC.url_to_be(url))
     
 
@@ -26,8 +25,9 @@ def main(url, input_image_amount, path=None):
     elements = []
     elements = driver.find_elements(By.CLASS_NAME, 'vertical-view__column')
     # print(f"elements_size: {len(elements)}")
-    image_url = []
 
+    image_url = []
+    # while the requested amount of images are not scraped yet...
     while len(image_url) < input_image_amount:
         # Scroll down and load images
         # only scroll down two times because the images get unloaded
@@ -37,13 +37,14 @@ def main(url, input_image_amount, path=None):
 
         wait.until(EC.presence_of_all_elements_located)
 
-        # Getting the div where the images are located
+        # Getting the div where the image urls are located
         div_elements = []
         for x in elements:
+            # in vertical-view__item there is a src property which containts the image url
             tmp = x.find_elements(By.CLASS_NAME, 'vertical-view__item')
             div_elements.append(tmp)
 
-        # flatting the list
+        # flatting the list because...
         flat_div_elements = [item for sublist in div_elements for item in sublist]
         # print(f"flat_div_size: {len(flat_div_elements)}")
 
@@ -74,13 +75,15 @@ def url_finder(flat_div_elements, image_url, input_image_amount):
     for y in flat_div_elements:
         if len(image_url) >= input_image_amount:
             return
-        tmp = y.find_element(By.CLASS_NAME, 'vertical-view__media')
-        tag_name = tmp.tag_name
+        foundImage = y.find_element(By.CLASS_NAME, 'vertical-view__media')
+        tag_name = foundImage.tag_name
 
-        # print(f'alt?: {tmp.get_attribute("alt")}')
+        # print(f'alt?: {foundImage.get_attribute("alt")}')
 
-        if tag_name == 'img' and tmp.get_attribute('alt') != 'None':
-            url = tmp.get_attribute('src')
+        # Check if it is an image and not a scroller video ad | usually they only have video ads
+        if tag_name == 'img' and foundImage.get_attribute('alt') != 'None':
+            url = foundImage.get_attribute('src')
+            # if we already have that image continue and dont append to list
             if url in image_url:
                 continue
             image_url.append(url)
