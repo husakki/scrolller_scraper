@@ -1,18 +1,26 @@
 import re
 import time
-import urllib.request
 
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def main(url, input_image_amount, path=None):
     if path is None or path == "":
         path = "./images/"
+    # Using Chrome Driver for the Webscraping
     driver = webdriver.Chrome()
+    
+    # Set the maximum waiting time (in seconds)
+    wait = WebDriverWait(driver, 7)
+    
     driver.get(url)
-    time.sleep(6)
+    
+    wait.until(EC.url_to_be(url))
+    
 
     # Getting the columns(generally 2-3)
     elements = []
