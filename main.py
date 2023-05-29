@@ -33,9 +33,9 @@ def main(url, input_image_amount, path=None):
         # only scroll down two times because the images get unloaded
         for j in range(0, 2):
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(1)
+            time.sleep(0.6) # wait 600ms for next scroll
 
-        time.sleep(5)  # Wait for page to load
+        wait.until(EC.presence_of_all_elements_located)
 
         # Getting the div where the images are located
         div_elements = []
@@ -57,7 +57,7 @@ def main(url, input_image_amount, path=None):
     counter = 1
     scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
     for x in image_url:
-        download_image(x, path + scrolller_name + " " + str(counter) + ".jpg")
+        # download_image(x, path + scrolller_name + " " + str(counter) + ".jpg") TODO activate me later!!!
         counter += 1
 
 def download_image(url, file_path):
@@ -87,4 +87,4 @@ def url_finder(flat_div_elements, image_url, input_image_amount):
 
 
 if __name__ == '__main__':
-    main("https://scrolller.com/r/cats?sort=top&filter=pictures", 3)
+    main("https://scrolller.com/r/cats?sort=top&filter=pictures", 15)
