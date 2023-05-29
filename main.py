@@ -16,7 +16,7 @@ def main(url, input_image_amount, path=None):
     
     # Set the maximum waiting time (in seconds)
     wait = WebDriverWait(driver, 7)
-    
+    print(f"Getting the URL: {url}")
     driver.get(url)
     wait.until(EC.url_to_be(url))
     
@@ -31,6 +31,7 @@ def main(url, input_image_amount, path=None):
     while len(image_url) < input_image_amount:
         # Scroll down and load images
         # only scroll down two times because the images get unloaded
+        print(f"Scrolling to load images")
         for j in range(0, 2):
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(0.6) # wait 600ms for next scroll
@@ -38,6 +39,7 @@ def main(url, input_image_amount, path=None):
         wait.until(EC.presence_of_all_elements_located)
 
         # Getting the div where the image urls are located
+        print(f"Finding elements that contain the image...")
         div_elements = []
         for x in elements:
             # in vertical-view__item there is a src property which containts the image url
@@ -46,29 +48,31 @@ def main(url, input_image_amount, path=None):
 
         # flatting the list because...
         flat_div_elements = [item for sublist in div_elements for item in sublist]
-        # print(f"flat_div_size: {len(flat_div_elements)}")
+        print(f"Found: {len(flat_div_elements)}")
 
         # Getting the image URL's
         url_finder(flat_div_elements, image_url, input_image_amount)
 
-    print(f"image_url_size: {len(image_url)} \n {image_url}")
+    # print(f"image_url_size: {len(image_url)} \n {image_url}")
 
     driver.close()
 
     counter = 1
     scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
+    print(f"Now downloading images, this might take a bit. \nDownloading: {len(image_url)} images")
     for x in image_url:
         # download_image(x, path + scrolller_name + " " + str(counter) + ".jpg") TODO activate me later!!!
         counter += 1
+    print(f"Done!")
 
 def download_image(url, file_path):
     response = requests.get(url)
     if response.status_code == 200:
         with open(file_path, 'wb') as file:
             file.write(response.content)
-        print("Image downloaded successfully.")
+        # print("Image downloaded successfully.")
     else:
-        print("Failed to download the image.")
+        print(f"Failed to download the image. \nSomething went wrong with this: {url} \nPlease check URL or try again!")
 
 
 def url_finder(flat_div_elements, image_urls, input_image_amount):
