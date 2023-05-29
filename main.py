@@ -1,4 +1,5 @@
 import re
+import sys
 import time
 
 import requests
@@ -8,9 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-def main(url, input_image_amount, path=None):
-    if path is None or path == "":
-        path = "./images/"
+def main(url, requested_image_amount, output_path):
     # Using Chrome Driver for the Webscraping
     driver = webdriver.Chrome()
     
@@ -28,7 +27,7 @@ def main(url, input_image_amount, path=None):
 
     image_url = []
     # while the requested amount of images are not scraped yet...
-    while len(image_url) < input_image_amount:
+    while len(image_url) < requested_image_amount:
         # Scroll down and load images
         # only scroll down two times because the images get unloaded
         print(f"Scrolling to load images")
@@ -51,17 +50,17 @@ def main(url, input_image_amount, path=None):
         print(f"Found: {len(flat_div_elements)}")
 
         # Getting the image URL's
-        url_finder(flat_div_elements, image_url, input_image_amount)
+        url_finder(flat_div_elements, image_url, requested_image_amount)
 
     # print(f"image_url_size: {len(image_url)} \n {image_url}")
 
     driver.close()
 
     counter = 1
-    scrolller_name = re.search("r/([a-zA-Z0-9]+)[?]", url).group(1)
+    scrolller_name = re.search("r/([a-zA-Z0-9]+)", url).group(1)
     print(f"Now downloading images, this might take a bit. \nDownloading: {len(image_url)} images")
     for x in image_url:
-        # download_image(x, path + scrolller_name + " " + str(counter) + ".jpg") TODO activate me later!!!
+        download_image(x, output_path + scrolller_name + "_" + str(counter) + ".jpg")
         counter += 1
     print(f"Done!")
 
@@ -94,4 +93,22 @@ def url_finder(flat_div_elements, image_urls, input_image_amount):
 
 
 if __name__ == '__main__':
-    main("https://scrolller.com/r/cats?sort=top&filter=pictures", 15)
+    # Access command-line arguments
+    args = sys.argv 
+
+    # Check if the correct number of arguments were passed
+    if len(args) < 3 or len(args) > 4:
+        print("Usage: python3 main.py <url> <requested_image_amount> [<output_path>]")
+        sys.exit(1)
+        
+    # Extract the arguments
+    url = args[1]
+    requested_image_amount = int(args[2])
+    
+    # Set default output path if not provided
+    output_path = "./images/"
+    if len(args) == 4:
+        output_path = args[3]
+
+    
+    main(url,requested_image_amount,output_path)
