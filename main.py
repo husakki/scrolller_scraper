@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import time
@@ -109,6 +110,10 @@ if __name__ == '__main__':
     output_path = "./images/"
     if len(args) == 4:
         output_path = args[3]
+    else:
+        # Create the directory
+        os.makedirs(output_path)
+        print()
 
     
     main(url,requested_image_amount,output_path)
