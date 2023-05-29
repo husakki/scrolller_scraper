@@ -71,9 +71,9 @@ def download_image(url, file_path):
         print("Failed to download the image.")
 
 
-def url_finder(flat_div_elements, image_url, input_image_amount):
+def url_finder(flat_div_elements, image_urls, input_image_amount):
     for y in flat_div_elements:
-        if len(image_url) >= input_image_amount:
+        if len(image_urls) >= input_image_amount:
             return
         foundImage = y.find_element(By.CLASS_NAME, 'vertical-view__media')
         tag_name = foundImage.tag_name
@@ -82,11 +82,11 @@ def url_finder(flat_div_elements, image_url, input_image_amount):
 
         # Check if it is an image and not a scroller video ad | usually they only have video ads
         if tag_name == 'img' and foundImage.get_attribute('alt') != 'None':
-            url = foundImage.get_attribute('src')
+            imageURL = foundImage.get_attribute('src')
             # if we already have that image continue and dont append to list
-            if url in image_url:
+            if imageURL in image_urls:
                 continue
-            image_url.append(url)
+            image_urls.append(imageURL)
 
 
 if __name__ == '__main__':
